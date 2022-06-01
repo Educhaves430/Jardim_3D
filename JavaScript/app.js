@@ -1,340 +1,639 @@
 import * as THREE from 'three';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 
-//Indica ao documento HTML que quando acabar de carregar todo o seu conteúdo
-//deve chamar a função "Start".
-document.addEventListener('DOMContentLoaded', Start);
+//['./static/skybox/clouds1_north.bmp', './static/skybox/clouds1_south.bmp', './static/skybox/clouds1_up.bmp', './static/skybox/clouds1_down.bmp', './static/skybox/clouds1_east.bmp', './static/skybox/clouds1_west.bmp']
 
-//Em threee.js tudo é baseado em cenas e camâras. Cada cena contém os objetos que a ela pertencem.
-//Podem existir diferentes câmaras mas apenas uma é renderizada.
-//As linhas de código abaixo criam uma cena, uma camâra e um render em WebGL.
-//Este último é o que vai renderizar a imagem tendo em conta a câmara e a cena.
-var cena = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-var renderer = new THREE.WebGLRenderer();
+//document.addEventListener('DOMContentLoaded', Start);
 
-// Variavel que guardara o Objeto importado
-var objetoImportado = new THREE.Group();
+const width = window.innerWidth;
+const height = window.innerHeight;
+const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
 
-// Variavel que ira guardar o Controlador de animações do objeto importado
-var mixerAnimacao;
+//var USE_WIREFRAME = false;
 
-//Variavel que é responsavel por controlar o tempo da aplicação
-var relogio = new THREE.Clock();
+const scene = new THREE.Scene();
 
-// Variavel com o objeto responsavel por Importador de ficheiros FBX
-var loader = new FBXLoader();
+const house = new THREE.Group();
 
-// Função utilizada para importar objetos FBX. O 1º parametro é a localização do .fbx
-// e o 2º parametro é 1 função que apenas é chamada se conseguir importar o objeto.
-loader.load('./Objetos/Samba Dancing.fbx', object => {
+const renderer = new THREE.WebGLRenderer();
 
-    // O mixerAnimacao é inicializado tendo em conta o objeto importado Inicializar o mixer
-    mixerAnimacao = new THREE.AnimationMixer(object);
+var keyboard = {};
+var player = { height:0.7, speed:0.4, turnSpeed:Math.PI*0.02 };
+var USE_WIREFRAME = false;
 
-    // object.animations é um array com todas as animações que o objeto tras quando é importado.
-    // O que nos fazemos é Criar uma ação de animação, tendo em conta a animação que é pretendida.
-    // De seguida é inicializada a reprodução da animação.
-    var action = mixerAnimacao.clipAction(object.animations[0]);
-    action.play();
+//Alvo x1
+var geometria = new THREE.CylinderGeometry(1.15, 1.15, 0.09, 64, 1);
+var material_r = new THREE.MeshBasicMaterial({ color: "red", });
+var cylinder00 = new THREE.Mesh(geometria, material_r);
+cylinder00.rotateX(3/2);
 
-    // object.traverse é uma função que percorre todos os filhos desse mesmo objeto. 
-    // O 1.º e único parâmetro da função é uma nova função que deve ser chamada para cada filho.
-    // Neste caso, o que nos fazemos é ver se o filho tem uma mesh e, no caso de ter, é indicado
-    // a esse objeto que deve permitir projetar e receber sombras, respetivamente.
-    object.traverse(child => {
-        if (child instanceof THREE.Mesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-        }
-    });
+geometria = new THREE.CylinderGeometry(0.95, 0.95, 0.1, 64, 1);
+var material_w = new THREE.MeshBasicMaterial({ color: "white", });
+var cylinder01 = new THREE.Mesh(geometria, material_w);
+cylinder01.rotateX(3/2);
 
-    // Adiciona o objeto importado à cena
-    cubo.add(object);
+geometria = new THREE.CylinderGeometry(0.75, 0.75, 0.11, 64, 1);
+var cylinder02 = new THREE.Mesh(geometria, material_r);
+cylinder02.rotateX(3/2);
 
-    // Quando o objeto é importado este tem uma escala de 1 nos tres eixos(XYZ). Uma vez que 
-    // este é demasiado grande, mudamos a escala deste objeto para ter 0.01 em todos os eixos.
-    object.scale.x = 0.01;
-    object.scale.y = 0.01;
-    object.scale.z = 0.01;
+geometria = new THREE.CylinderGeometry(0.5, 0.5, 0.12, 64, 1);
+var cylinder03 = new THREE.Mesh(geometria, material_w);
+cylinder03.rotateX(3/2);
 
-    // Mudamos a posição do objeto importado para que este não fique na mesma posição que o cubo.
-    object.position.x = 3;
+geometria = new THREE.CylinderGeometry(0.25, 0.25, 0.13, 64, 1);
+var cylinder04 = new THREE.Mesh(geometria, material_r);
+cylinder04.rotateX(3/2);
 
-    // Guardamos o objeto importado na variavel objetoImportado.
-    objetoImportado = object;
-})
+//Alvo x2
+geometria = new THREE.CylinderGeometry(0.70, 0.70, 0.11, 64, 1);
+var material_b = new THREE.MeshBasicMaterial({ color: "blue", });
+var cylinder10 = new THREE.Mesh(geometria, material_b);
+cylinder10.rotateX(3/2);
 
-//o código abaixo indica ao render qual o tamanho da janela de visualização 
-renderer.setSize(window.innerWidth - 15, window.innerHeight - 15);
+geometria = new THREE.CylinderGeometry(0.5, 0.5, 0.12, 64, 1);
+var cylinder11 = new THREE.Mesh(geometria, material_w);
+cylinder11.rotateX(3/2);
 
-//O código abaixo adiciona o render ao body do documento html para que este possa ser visto
-document.body.appendChild(renderer.domElement);
+geometria = new THREE.CylinderGeometry(0.25, 0.25, 0.13, 64, 1);
+var cylinder12 = new THREE.Mesh(geometria, material_b);
+cylinder12.rotateX(3/2);
 
-//Em THREE.JS existem diferentes primitivas entre as quais: Box (cubo), plano (2D), circulo (2D),
-//esfera, cone, cilindro, tetraedro, dodecaedro, icosaedro, octaedro, poliedro, ring (2D),
-//geometria para texto e torus, etc.
-//Para criarmos um objeto precisamos sempre de uma geometria e um material , o primeiro é
-//responsável por definir a geometria (ou vértices de cada ponto), e o 2º é responsável 
-//por dizer qual o material que o objeto irá usar.
-//Para criar um cubo é necessário criar a geometria para isso utilizamos o código abaixo indicando
-//qual o comprimento, altura e profundidade, respetivamente
-var geometria = new THREE.BoxGeometry(1, 1, 1);
+var alvo_x1 = new THREE.Group();
+    alvo_x1.add(cylinder00, cylinder01, cylinder02, cylinder03, cylinder04);
+    alvo_x1.position.x = 10;
+    alvo_x1.position.y = 2;
 
-// Mudamos o material do cubo para este receba luz por parte de 1 fonte de luz.
-var material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    var alvo_x2 = new THREE.Group();
+    alvo_x2.add(cylinder10, cylinder11, cylinder12);
+    alvo_x2.position.x = 15;
+    alvo_x2.position.y = 2;
 
-//No final, quando já tens a geometria e o material, é necessário criares uma mesh
-//com os dados da geometria e do material. A mesh é o componente necessáio para
-//poderes fazer as diferentes transformações do objeto.
-var cubo = new THREE.Mesh(geometria, material);
+    scene.add(alvo_x1);
+scene.add(alvo_x2);
 
-//variável que vai gurdar que rotação aplicar ao cubo
-var cuboCoordRotation;
+//light.lookAt(alvo_x1.position);
 
-//Variável que irá guardar para que dimenções a camara irá se movimentar
-var camaraAndar = { x: 0, y: 0, z: 0 };
-//Velocidade de movimentação que a camâra irá andar
-var veleocidadeAndar = 0.05;
+/*const axes = new THREE.AxesHelper(5);
+scene.add(axes);
+axes.position.setY(10);*/
 
-// Desafio 1 - Dançarino
-var dancerWalk = { x: 0, y: 0, z: 0 };
-var dancerSpeed = 0.1;
-// Desafio 1 - Boneco de neve
-var snowman = new THREE.Group();
-
-//Este código adiciona um envento que é deplotado sempre que o rato se mexer 
-document.addEventListener('mousemove', ev => {
-    //A posição do rato encontra-se de 0 até ao tamanho do ecrã em pixeis. É então
-    //necessário converte-lo para a escala de -1 a 1. Para isso utilizamos o código
-    //a baixo
-    var x = ev.clientX / window.innerWidth * 2 - 1;
-    var y = ev.clientY / window.innerHeight * 2 - 1;
-
-    //Adiciobamos a rotação que devemos aplicar na variável cuboCoordRotation
-    cuboCoordRotation = {
-        x: x,
-        y: y
-    };
-});
-
-//Adicionamos um evento que é desplotado sempre que uma tecla for mantida pressionada
-/*document.addEventListener('keydown', ev => {
-    //Inicializa a variável de controlo
-    var coords = {
-        x:0,
-        y:0,
-        z:0
-    };
-
-    //Verifica se a tecla W foi premida e coloca a variável Z do coords para o valor correto
-    if(ev.keyCode == 87)
-        coords.z -= veleocidadeAndar;
-
-    //Verifica se a tecla S foi premida e coloca a variável Z do coords para o valor correto
-    if(ev.keyCode == 83)
-        coords.z += veleocidadeAndar;
-
-    //Verifica se a tecla A foi premida e coloca a variável Z do coords para o valor correto
-    if(ev.keyCode == 65)
-        coords.x -= veleocidadeAndar;
-
-    //Verifica se a tecla D foi premida e coloca a variável Z do coords para o valor correto
-    if(ev.keyCode == 68)
-        coords.x += veleocidadeAndar;
-
-    //Aplica a variável coord à variável camaraAndar
-    camaraAndar = coords;
-});
-
-//Adicionamos um evento que é desplotado sempre que uma tecla for mantida pressionada
-document.addEventListener('keyup', ev => {
-    //Inicializa a variável de controlo
-    var coords = {
-        x:0,
-        y:0,
-        z:0
-    };
-
-    //Verifica se a tecla W foi levantada
-    if(ev.keyCode == 87)
-        coords.z += veleocidadeAndar;
-
-    //Verifica se a tecla S foi levantada
-    if(ev.keyCode == 83)
-        coords.z -= veleocidadeAndar;
-
-    //Verifica se a tecla A foi levantada
-    if(ev.keyCode == 65)
-        coords.x += veleocidadeAndar;
-
-    //Verifica se a tecla D foi levantada
-    if(ev.keyCode == 68)
-        coords.x -= veleocidadeAndar;
-
-    //Aplica a variável coord à variável camaraAndar
-    camaraAndar = coords;
-});*/
-
-//Adicionamos um evento que é desplotado sempre que uma tecla for mantida pressionada
-document.addEventListener('keydown', ev => {
-    var coords = {
-        x: 0,
-        y: 0,
-        z: 0,
-    };
-    if (ev.key == 'w')
-        // coords.z -= cameraSpeed;
-        coords.z -= dancerSpeed;
-    if (ev.key == 'a')
-        // coords.x -= cameraSpeed;
-        coords.x -= dancerSpeed;
-    if (ev.key == 's')
-        // coords.z += cameraSpeed;
-        coords.z += dancerSpeed;
-    if (ev.key == 'd')
-        // coords.x += cameraSpeed;
-        coords.x += dancerSpeed;
-    // cameraWalk = coords;
-    dancerWalk = coords;
-});
-
-//Adicionamos um evento que é desplotado sempre que uma tecla for mantida pressionada
-document.addEventListener('keyup', ev => {
-    var coords = {
-        x: 0,
-        y: 0,
-        z: 0,
-    };
-    if (ev.key == 'w')
-        // coords.z += cameraSpeed;
-        coords.z += dancerSpeed;
-    if (ev.key == 'a')
-        // coords.x += cameraSpeed;
-        coords.x += dancerSpeed;
-    if (ev.key == 's')
-        // coords.z -= cameraSpeed;
-        coords.z -= dancerSpeed;
-    if (ev.key == 'd')
-        // coords.x -= cameraSpeed;
-        coords.x -= dancerSpeed;
-    // cameraWalk = coords;
-    dancerWalk = coords;
-});
-
-// Desafio 2 - Cubo aleatório
-document.addEventListener('keypress', ev => {
-    if (ev.key == ' ') {
-        let material = new THREE.MeshStandardMaterial({ color:  Math.random() * 0xffffff });
-        let ncube = new THREE.Mesh(geometria, material);
-        let x = THREE.MathUtils.randFloat(-15, 15);
-        let y = THREE.MathUtils.randFloat(-15, 15);
-        let z = THREE.MathUtils.randFloat(-15, 15);
-        ncube.position.set(x, y, z);
-        cena.add(ncube);
+const skyboxloader = new THREE.CubeTextureLoader();
+skyboxloader.load(
+    [
+        'img/sky/px.bmp',
+		'img/sky/nx.bmp',
+		'img/sky/py.bmp',
+		'img/sky/ny.bmp',
+		'img/sky/pz.bmp',
+		'img/sky/nz.bmp'
+    ],
+    (texture) => {
+        scene.background = texture;
     }
-});
+)
 
-//Função chamada quando a página HTML acabar de carregar e é responsável por configurar
-//a cena para a primeira renderização
-function Start() {
-    //O código abaixo adiciona o cubo que criamos anteriormente à cena.
-    cena.add(cubo);
+const menuPanel = document.getElementById('menuPanel')
+const startButton = document.getElementById('startButton')
+startButton.addEventListener(
+    'click',
+    function () {
+        controls.lock()
+    },
+    false
+)
 
-    // Desafio 1 - Boneco de neve  
-    var geometria = new THREE.SphereGeometry(10, 50, 50);
-    var material = new THREE.MeshBasicMaterial({ color: "white", });
-    var big_ball = new THREE.Mesh(geometria, material);
+const controls = new PointerLockControls(camera, renderer.domElement)
+//controls.addEventListener('change', () => console.log("Controls Change"))
+controls.addEventListener('lock', () => (menuPanel.style.display = 'none'))
+controls.addEventListener('unlock', () => (menuPanel.style.display = 'block'))
 
-    geometria = new THREE.SphereGeometry(7, 50, 50);
-    var small_ball = new THREE.Mesh(geometria, material);
-    small_ball.position.y += 14;
-
-    geometria = new THREE.SphereGeometry(2, 20, 20);
-    material = new THREE.MeshBasicMaterial({ color: "black" });
-    var left_eye = new THREE.Mesh(geometria, material);
-    left_eye.position.x -= 2;
-    left_eye.position.y += 15;
-    left_eye.position.z += 4.8;
-
-    var right_eye = new THREE.Mesh(geometria, material);
-    right_eye.position.x += 2;
-    right_eye.position.y += 15;
-    right_eye.position.z += 4.8;
-
-    geometria = new THREE.RingGeometry(1, 2, 20, 20, Math.PI, Math.PI);
-    material = new THREE.MeshBasicMaterial({ color: 'red' });
-    var mouth = new THREE.Mesh(geometria, material);
-    mouth.position.y += 13;
-    mouth.position.z += 7;
-
-    var head = new THREE.Group();
-    head.add(small_ball, left_eye, right_eye, mouth);
-    snowman.add(head, big_ball);
-
-    snowman.position.x -= 4;
-    snowman.scale.set(0.15, 0.15, 0.15);
-    cena.add(snowman);
-
-    // Criaçao de um foco de luz com a cor branca(#ffffff) e intensidade a 1 (normal)
-    var light = new THREE.SpotLight('white', 1);
-
-    // Mudar posição da luz para ficar 5u. acima de onde a câmara se encontra.
-    light.position.y = 5;
-    light.position.z = 10;
-
-    // Dizemos a light para ficar a apontar para a posiçao do cubo.
-    light.lookAt(cubo.position);
-
-    // Adicionamos a light à cena
-    cena.add(light);
-
-    //Coloca a câmara a 10 unidades no eixo do z a partir do centro do mundo
-    camera.position.z = 10;
-
-    //Como já sabes, esta linha de código é responsável por dizer ao browser que
-    //pretendemos criar uma animação e que deve chamar a função passada no parâmetro
-    //da função.
-    requestAnimationFrame(update);
+const onKeyDown = function (event) {
+    switch (event.code) {
+        case 'KeyW':
+            controls.moveForward(2)
+            break
+        case 'KeyA':
+            controls.moveRight(-2)
+            break
+        case 'KeyS':
+            controls.moveForward(-2)
+            break
+        case 'KeyD':
+            controls.moveRight(2)
+            break
+    }
 }
+document.addEventListener('keydown', onKeyDown, false)
 
-//Função chamada a cada frame para poder-mos criar animações. Cso contrário
-//apenas veriamos uma simples imagem sem haver mudanças
-function update() {
-    //A cada frame mudamos a rotação do cubo no eixo tendo em conta a posição do rato
-    if (cuboCoordRotation != null) {
-        cubo.rotation.x += cuboCoordRotation.y * 0.1;
-        cubo.rotation.y += cuboCoordRotation.x * 0.1;
-    }
+function create() {
+/*{
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(
+      55,
+      window.innerWidth / window.innerHeight,
+      45,
+      30000
+    );
+    //camera.position.set(1200, -250, 20000);
+    camera.position.set(1200, -250, 2000);
 
-    //A cada frame mudamos a posição da camâra tendo em conta a posição das teclas premidas
-    /*if(camaraAndar != null){
-        camara.position.x += camaraAndar.x;
-        camara.position.z += camaraAndar.z;
-    }*/
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.domElement.id = "canvas";
+    document.body.appendChild(renderer.domElement);
 
-    //Desafio 1
-    if (dancerWalk != null) {
-        objetoImportado.position.x += dancerWalk.x;
-        objetoImportado.position.z += dancerWalk.z;
-    }
+    const materialArray = createMaterialArray(skyboxImage);
+    skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
+    skybox = new THREE.Mesh(skyboxGeo, materialArray);
+    scene.add(skybox);
 
-    // Necessario atualizar o mixerAnimacao tendo em conta o tempo desde o ultimo update.
-    // relogio.getDelta() Indica quanto tempo passou desde o ultimo frame renderizado.
-    if (mixerAnimacao != null) {
-        mixerAnimacao.update(relogio.getDelta());
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enabled = true;
+  controls.minDistance = 700;
+  controls.maxDistance = 1500;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 1.0;
+
+  window.addEventListener('resize', onWindowResize, false);
+
+    createGrass();
+    
+    createHouse();
+
+    animate();
+  }
+  function animate() {
+
+    controls.update();
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+
+  create();
+
+  skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
+  skybox = new THREE.Mesh(skyboxGeo);
+  scene.add(skybox);
+  animate();
+
+const ft = new THREE.TextureLoader().load("clouds1_north.bmp");
+const bk = new THREE.TextureLoader().load("clouds1_south.bmp");
+const up = new THREE.TextureLoader().load("clouds1_up.bmp");
+const dn = new THREE.TextureLoader().load("clouds1_down.bmp");
+const rt = new THREE.TextureLoader().load("clouds1_east.bmp");
+const lf = new THREE.TextureLoader().load("clouds1_west.bmp");
+
+function createPathStrings(filename) {
+    const basePath = "./static/skybox/";
+    const baseFilename = basePath + filename;
+    const fileType = ".bmp";
+    const sides = ["north", "south", "up", "down", "east", "west"];
+    const pathStings = sides.map(side => {
+      return baseFilename + "_" + side + fileType;
+    });
+    return pathStings;
+  }
+
+  let skyboxImage = "clouds1";
+/*
+
+function createMaterialArray(filename) {
+    const skyboxImagepaths = createPathStrings(filename);
+    const materialArray = skyboxImagepaths.map(image => {
+      let texture = new THREE.TextureLoader().load(image);
+      return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide }); // <---
+    });
+    return materialArray;
+  }
+
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  */
+
+
+    renderer.setSize(width, height);
+    renderer.setClearColor(0xcce0ff, 1);
+    document.body.appendChild(renderer.domElement);
+
+    camera.position.set(15, 2, 0)
+    camera.lookAt(scene.position);
+
+    const light = new THREE.AmbientLight(0xCCCCCC);
+    scene.add(light);
+
+    createGrass();
+    
+    createHouse();
+
+    animate();
+
+    function createGrass() {
+        const geometry = new THREE.PlaneGeometry( 50, 50);
+    
+        const texture = new THREE.TextureLoader().load('img/relva.jpg');
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 10, 10 );
+    
+        const grassMaterial = new THREE.MeshBasicMaterial({map: texture});
+    
+        const grass = new THREE.Mesh( geometry, grassMaterial );
+    
+        grass.rotation.x = -0.5 * Math.PI;
+    
+        scene.add( grass );
     }
     
-    //Reinicializar a variável
-    //camaraAndar = {x:0, y:0, z:0};
-    dancerWalk = { x: 0, y: 0, z: 0 };
+    function createFloor() {
+        const geometry = new THREE.PlaneGeometry( 10, 15);
+    
+        const texture = new THREE.TextureLoader().load('img/chao.jpg');
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 10, 10 );
+    
+        const material = new THREE.MeshBasicMaterial({map: texture});
+    
+        const floor = new THREE.Mesh( geometry, material );
+    
+        floor.rotation.x = -0.5 * Math.PI;
+        floor.position.y = 1;
+        floor.position.z = 7.5;
+    
+        house.add(floor);
+    }
 
-    //Renderizamos a cena tendo em conta qual a cena que queremos visualizar e
-    //a camâra que pretendemos
-    renderer.render(cena, camera);
+    function createHouse() {
+        createFloor();
+        
+        const sideWall = createSideWall();
+        const sideWall2 = createSideWall();
+        sideWall2.position.z = 15;
 
-    //Como já sabes, esta linha de código é responsável por dizer ao browser que
-    //pretendemos criar uma animação e que deve chamar a função passada no parâmetro
-    //da função.
-    requestAnimationFrame(update);
+        createFrontWall();
+        createBackWall();
+
+        const roof = createRoof();
+        const roof2 = createRoof();
+        roof2.rotation.x = Math.PI / 2;
+        roof2.rotation.y = Math.PI / 4 * 0.6;
+        roof2.position.y = 130;
+        roof2.position.x = -50;
+        roof2.position.z = 155;
+
+        createWindow();
+        //createDoor();
+
+        //createBed();
+    }
+   
+    scene.add(house);
+
+    //scene.fog = new THREE.Fog(0xffffff, 10, 1500);
 }
+
+function createSideWall() {
+    const shape = new THREE.Shape();
+    shape.moveTo(-5, 0);
+    shape.lineTo(5, 0);
+    shape.lineTo(5,5);
+    shape.lineTo(0,7.5);
+    shape.lineTo(-5,5);
+    shape.lineTo(-5,0);
+
+    const extrudeGeometry = new THREE.ExtrudeGeometry( shape );
+
+    const texture = new THREE.TextureLoader().load('./img/parede.jpg');
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 1, 1 );
+
+    var material = new THREE.MeshBasicMaterial( {map: texture} );
+
+    const sideWall = new THREE.Mesh( extrudeGeometry, material ) ;
+
+    house.add(sideWall);
+
+    return sideWall;
+}
+
+function createFrontWall() {
+    const shape = new THREE.Shape();
+    shape.moveTo(-7.5, 0);
+    shape.lineTo(7.5, 0);
+    shape.lineTo(7.5,5);
+    shape.lineTo(-7.5,5);
+    shape.lineTo(-7.5,0);
+
+    const window = new THREE.Path();
+    window.moveTo(30,30)
+    window.lineTo(80, 30)
+    window.lineTo(80, 80)
+    window.lineTo(30, 80);
+    window.lineTo(30, 30);
+    shape.holes.push(window);
+
+   /* const door = new THREE.Path();
+    door.moveTo(-30, 0)
+    door.lineTo(-30, 80)
+    door.lineTo(-80, 80)
+    door.lineTo(-80, 0);
+    door.lineTo(-30, 0);
+    shape.holes.push(door);*/
+
+    const extrudeGeometry = new THREE.ExtrudeGeometry( shape ) 
+
+    const texture = new THREE.TextureLoader().load('./img/parede.jpg');
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 0.01, 0.005 );
+
+    const material = new THREE.MeshBasicMaterial({map: texture} );
+
+    const frontWall = new THREE.Mesh( extrudeGeometry, material ) ;
+
+    frontWall.position.z = 7.5;
+    frontWall.position.x = 5;
+    frontWall.rotation.y = Math.PI * 0.5;
+
+    house.add(frontWall);
+}
+
+function createBackWall() {
+    const shape = new THREE.Shape();
+    shape.moveTo(-7.5, 0)
+    shape.lineTo(7.5, 0)
+    shape.lineTo(7.5,5)
+    shape.lineTo(-7.5,5);
+
+    const extrudeGeometry = new THREE.ExtrudeGeometry( shape ) 
+
+    const texture = new THREE.TextureLoader().load('./img/parede.jpg');
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 0.01, 0.005 );
+
+    const material = new THREE.MeshBasicMaterial({map: texture});
+
+    const backWall = new THREE.Mesh( extrudeGeometry, material) ;
+
+    backWall.position.z = 7.5;
+    backWall.position.x = -5;
+    backWall.rotation.y = Math.PI * 0.5;
+
+    house.add(backWall);
+}
+
+function createRoof() {
+    const geometry = new THREE.BoxGeometry( 120, 320, 10 );
+
+    const texture = new THREE.TextureLoader().load('./img/telhado.jpg');
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 5, 1);
+    texture.rotation = Math.PI / 2;
+    const textureMaterial = new THREE.MeshBasicMaterial({ map: texture});
+
+    const colorMaterial = new THREE.MeshBasicMaterial({ color: 'grey' });
+
+    const materials = [
+        colorMaterial,
+        colorMaterial,
+        colorMaterial,
+        colorMaterial,
+        colorMaterial,
+        textureMaterial
+    ];
+
+    const roof = new THREE.Mesh( geometry, materials );
+
+    house.add(roof);
+
+    roof.rotation.x = Math.PI / 2;
+    roof.rotation.y = - Math.PI / 4 * 0.6;
+    roof.position.y = 130;
+    roof.position.x = 50;
+    roof.position.z = 155;
+    
+    return roof;
+}
+
+function createWindow() {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.lineTo(0, 50)
+    shape.lineTo(50,50)
+    shape.lineTo(50,0);
+    shape.lineTo(0, 0);
+
+    const hole = new THREE.Path();
+    hole.moveTo(5,5)
+    hole.lineTo(5, 45)
+    hole.lineTo(45, 45)
+    hole.lineTo(45, 5);
+    hole.lineTo(5, 5);
+    shape.holes.push(hole);
+
+    const extrudeGeometry = new THREE.ExtrudeGeometry(shape);
+
+    var extrudeMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
+
+    var window = new THREE.Mesh( extrudeGeometry, extrudeMaterial ) ;
+    window.rotation.y = Math.PI / 2;
+    window.position.y = 30;
+    window.position.x = 100;
+    window.position.z = 120;
+
+    house.add(window);
+
+    return window;
+
+}
+
+/*function createDoor() {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.lineTo(0, 80);
+    shape.lineTo(50,80);
+    shape.lineTo(50,0);
+    shape.lineTo(0, 0);
+
+    const hole = new THREE.Path();
+    hole.moveTo(5,5);
+    hole.lineTo(5, 75);
+    hole.lineTo(45, 75);
+    hole.lineTo(45, 5);
+    hole.lineTo(5, 5);
+    shape.holes.push(hole);
+
+    const extrudeGeometry = new THREE.ExtrudeGeometry( shape );
+
+    const material = new THREE.MeshBasicMaterial( { color: 'silver' } );
+
+    const door = new THREE.Mesh( extrudeGeometry, material ) ;
+
+    door.rotation.y = Math.PI / 2;
+    door.position.y = 0;
+    door.position.x = 100;
+    door.position.z = 230;
+
+    house.add(door);
+}*/
+
+/*function createBed() {
+    var loader = new THREE.FBXLoader();
+    loader.load('./obj/bed.fbx', function ( object ) {
+        object.position.x = 40;
+        object.position.z = 80;
+        object.position.y = 20;
+
+        house.add( object );
+    } );
+}*/
+
+const clock = new THREE.Clock();
+
+//const controls = new THREE.FirstPersonControls(camera);
+//controls.lookSpeed = 0.05;
+//controls.movementSpeed = 100;
+//controls.lookVertical = false;
+
+create()
+render()
+animate();
+
+function render() {
+    const delta = clock.getDelta();
+    controls.update(delta);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(render)
+}
+
+function animate(){
+	/*requestAnimationFrame(animate); // Tells the browser to smoothly render at 60Hz
+	
+	// Draw the scene from the perspective of the camera.
+	renderer.render(scene, camera);
+    */
+
+    requestAnimationFrame(animate); // Tells the browser to smoothly render at 60Hz
+	
+	// Rotate our mesh.
+	//mesh.rotation.x += 0.01;
+	//mesh.rotation.y += 0.02;
+	/*
+	// Keyboard movement inputs
+	if(keyboard[87]){ // W key
+		camera.position.x -= Math.sin(camera.rotation.y) * player.speed;
+		camera.position.z -= -Math.cos(camera.rotation.y) * player.speed;
+	}
+	if(keyboard[83]){ // S key
+		camera.position.x += Math.sin(camera.rotation.y) * player.speed;
+		camera.position.z += -Math.cos(camera.rotation.y) * player.speed;
+	}
+	if(keyboard[65]){ // A key
+		// Redirect motion by 90 degrees
+		camera.position.x += Math.sin(camera.rotation.y + Math.PI/2) * player.speed;
+		camera.position.z += -Math.cos(camera.rotation.y + Math.PI/2) * player.speed;
+	}
+	if(keyboard[68]){ // D key
+		camera.position.x += Math.sin(camera.rotation.y - Math.PI/2) * player.speed;
+		camera.position.z += -Math.cos(camera.rotation.y - Math.PI/2) * player.speed;
+	}
+	
+	// Keyboard turn inputs
+	if(keyboard[37]){ // left arrow key
+		camera.rotation.y -= player.turnSpeed;
+	}
+	if(keyboard[39]){ // right arrow key
+		camera.rotation.y += player.turnSpeed;
+	}
+	*/
+	// Draw the scene from the perspective of the camera.
+	renderer.render(scene, camera);
+}
+/*
+function keyDown(event){
+	keyboard[event.keyCode] = true;
+}
+
+function keyUp(event){
+	keyboard[event.keyCode] = false;
+}
+
+window.addEventListener('keydown', keyDown);
+window.addEventListener('keyup', keyUp);
+
+// When the page has loaded, run init();
+window.onload = init;
+*/
+
+/*
+function createGrass() {
+    const geometry = new THREE.PlaneGeometry( 100, 100);
+    const texture = new THREE.TextureLoader().load('img/relva.jpg');
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 100, 100 );
+    const grassMaterial = new THREE.MeshBasicMaterial({map: texture});
+    const grass = new THREE.Mesh( geometry, grassMaterial );
+    grass.rotation.x = -0.5 * Math.PI;
+    scene.add( grass );
+    }
+
+function createHouse() {
+createFloor();
+const sideWall = createSideWall();
+const sideWall2 = createSideWall();
+sideWall2.position.z = 300;
+createFrontWall();
+createBackWall();
+const roof = createRoof();
+const roof2 = createRoof();
+roof2.rotation.x = Math.PI / 2;
+roof2.rotation.y = Math.PI / 4 * 0.6;
+roof2.position.y = 130;
+roof2.position.x = -50;
+roof2.position.z = 155;
+createWindow();
+createDoor();
+createBed();
+}
+
+function createFloor() {
+    const geometry = new THREE.PlaneGeometry( 200, 300);
+    const texture = new THREE.TextureLoader().load('img/chao.jpg');
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 2, 2 );
+    const material = new THREE.MeshBasicMaterial({map: texture});
+    const floor = new THREE.Mesh( geometry, material );
+    floor.rotation.x = -0.5 * Math.PI;
+    floor.position.y = 1;
+    floor.position.z = 150;
+    house.add(floor);
+    }
+
+    function createSideWall() {
+        const shape = new THREE.Shape();
+        shape.moveTo(-100, 0);
+        shape.lineTo(100, 0);
+        shape.lineTo(100,100);
+        shape.lineTo(0,150);
+        shape.lineTo(-100,100);
+        shape.lineTo(-100,0);
+        const extrudeGeometry = new THREE.ExtrudeGeometry( shape );
+        const texture = new THREE.TextureLoader().load('./img/wall.jpg');
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 0.01, 0.005 );
+        var material = new THREE.MeshBasicMaterial( {map: texture} );
+        const sideWall = new THREE.Mesh( extrudeGeometry, material ) ;
+        house.add(sideWall);
+        return sideWall;
+        }
+
+        const sideWall = createSideWall();
+const sideWall2 = createSideWall();
+sideWall2.position.z = 300;
+*/
