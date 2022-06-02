@@ -1,6 +1,7 @@
+
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -15,7 +16,7 @@ const house = new THREE.Group();
 
 const renderer = new THREE.WebGLRenderer();
 
-const loader = new FBXLoader();
+const loader = new GLTFLoader();
 
 //SkyBox 
 const skyboxloader = new THREE.CubeTextureLoader();
@@ -74,7 +75,7 @@ function create() {
     document.body.appendChild(renderer.domElement);
 
     //Posição da camara
-    camera.position.set(0, 6, 0)
+    camera.position.set(0, 5, 0)
     camera.lookAt(scene.position);
 
     //Luz
@@ -152,17 +153,38 @@ function create() {
         frontWall2.position.z = 0.5;
         //createBackWall();
 
-        const roof = createRoof();
+        const roof1 = createRoof();
         const roof2 = createRoof();
+        const roof3 = createRoof();
+        const roof4 = createRoof();
+        roof1.rotation.x = Math.PI / 2;
+        roof1.rotation.y = -(Math.PI / 4);
+        roof1.rotation.z = Math.PI * 0.5;
+        roof1.position.y = 4.9;
+        roof1.position.x = 12.8;
+        roof1.position.z = 0.5;
         roof2.rotation.x = Math.PI / 2;
-        roof2.rotation.y = Math.PI / 4 * 0.6;
-        roof2.position.y = 130;
-        roof2.position.x = -50;
-        roof2.position.z = 155;
+        roof2.rotation.y = Math.PI / 4;
+        roof2.rotation.z = Math.PI * 0.5;
+        roof2.position.y = 7.7;
+        roof2.position.x = -10.2;
+        roof2.position.z = 0.5;
+        roof3.rotation.x = Math.PI / 2;
+        roof3.rotation.y = -(Math.PI / 4);
+        roof3.rotation.z = Math.PI * 0.5;
+        roof3.position.y = 4.9;
+        roof3.position.x = -7.2;
+        roof3.position.z = 0.5;
+        roof4.rotation.x = Math.PI / 2;
+        roof4.rotation.y = Math.PI / 4;
+        roof4.rotation.z = Math.PI * 0.5;
+        roof4.position.y = 7.5;
+        roof4.position.x = 10;
+        roof4.position.z = 0.5;
 
         //createWindow();
         //createDoor();
-        //createBench();
+        createBench();
         //createBed();
     }
    
@@ -277,35 +299,26 @@ function createBackWall() {
 
 //Criar Telhado
 function createRoof() {
-    const geometry = new THREE.BoxGeometry( 120, 320, 10 );
+
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.lineTo(-13, 0);
+    shape.lineTo(-13, 4);
+    shape.lineTo(13, 4);
+    shape.lineTo(13, 0);
+
+    const extrudeGeometry = new THREE.ExtrudeGeometry( shape, { depth: 0.001 });
 
     const texture = new THREE.TextureLoader().load('./img/telhado.jpg');
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set( 5, 1);
-    texture.rotation = Math.PI / 2;
-    const textureMaterial = new THREE.MeshBasicMaterial({ map: texture});
+    texture.repeat.set(0.5, 0.5);
 
-    const colorMaterial = new THREE.MeshBasicMaterial({ color: 'grey' });
+    var material = new THREE.MeshBasicMaterial( {map: texture} );
 
-    const materials = [
-        colorMaterial,
-        colorMaterial,
-        colorMaterial,
-        colorMaterial,
-        colorMaterial,
-        textureMaterial
-    ];
-
-    const roof = new THREE.Mesh( geometry, materials );
+    const roof = new THREE.Mesh( extrudeGeometry, material ) ;
 
     house.add(roof);
 
-    roof.rotation.x = Math.PI / 2;
-    roof.rotation.y = - Math.PI / 4 * 0.6;
-    roof.position.y = 130;
-    roof.position.x = 50;
-    roof.position.z = 155;
-    
     return roof;
 }
 
@@ -350,7 +363,6 @@ function createWindow() {
     shape.lineTo(50,80);
     shape.lineTo(50,0);
     shape.lineTo(0, 0);
-
     const hole = new THREE.Path();
     hole.moveTo(5,5);
     hole.lineTo(5, 75);
@@ -358,28 +370,22 @@ function createWindow() {
     hole.lineTo(45, 5);
     hole.lineTo(5, 5);
     shape.holes.push(hole);
-
     const extrudeGeometry = new THREE.ExtrudeGeometry( shape );
-
     const material = new THREE.MeshBasicMaterial( { color: 'silver' } );
-
     const door = new THREE.Mesh( extrudeGeometry, material ) ;
-
     door.rotation.y = Math.PI / 2;
     door.position.y = 0;
     door.position.x = 100;
     door.position.z = 230;
-
     house.add(door);
 }*/
 
 function createBench() {
-    loader.load('./obj/Bench.fbx', object => {
-        object.position.x = 1;
-        object.position.z = 1;
-        object.position.y = 1;
-        house.add( object );
-    } );
+    loader.load('../obj/bench/scene.gltf', gltf => {
+        gltf.scene.position.set(1, 1, 1);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
 }
 
 //const controls = new THREE.FirstPersonControls(camera);
