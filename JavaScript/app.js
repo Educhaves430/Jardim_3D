@@ -75,7 +75,7 @@ function create() {
     document.body.appendChild(renderer.domElement);
 
     //Posição da camara
-    camera.position.set(0, 5, 0)
+    camera.position.set(0, 1, 0)
     camera.lookAt(scene.position);
 
     //Luz
@@ -184,7 +184,12 @@ function create() {
 
         //createWindow();
         //createDoor();
-        createBench();
+        createBench1();
+        createBench2();
+        createBench3();
+        createBench4();
+        createBench5();
+        createBench6();
         //createBed();
     }
    
@@ -380,9 +385,61 @@ function createWindow() {
     house.add(door);
 }*/
 
-function createBench() {
+function createBench1() {
     loader.load('../obj/bench/scene.gltf', gltf => {
-        gltf.scene.position.set(1, 1, 1);
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(9, 0, -6);
+        gltf.scene.scale.set(2, 2, 2);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createBench2() {
+    loader.load('../obj/bench/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(9, 0, 0);
+        gltf.scene.scale.set(2, 2, 2);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createBench3() {
+    loader.load('../obj/bench/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(9, 0, 6);
+        gltf.scene.scale.set(2, 2, 2);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+/////////////////////////////////////
+function createBench4() {
+    loader.load('../obj/bench/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-9, 0, -6);
+        gltf.scene.scale.set(2, 2, 2);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createBench5() {
+    loader.load('../obj/bench/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-9, 0, 0);
+        gltf.scene.scale.set(2, 2, 2);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createBench6() {
+    loader.load('../obj/bench/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-9, 0, 6);
+        gltf.scene.scale.set(2, 2, 2);
         house.add(gltf.scene);
         worldOctree.fromGraphNode(gltf.scene);
     });
