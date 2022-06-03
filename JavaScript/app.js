@@ -109,12 +109,12 @@ function create() {
     
     //Criar chão de madeira
     function createFloor() {
-        const geometry = new THREE.PlaneGeometry( 10, 15);
+        const geometry = new THREE.PlaneGeometry( 9, 15);
     
         const texture = new THREE.TextureLoader().load('img/chao.jpg');
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set( 10, 10 );
+        texture.repeat.set( 3, 15);
     
         const material = new THREE.MeshBasicMaterial({map: texture});
     
@@ -183,8 +183,15 @@ function create() {
         roof4.position.z = 0.5;
 
 
-        const backwall = createBackWall();
-        backwall.rotation.y = Math.PI * 0.5;
+        const backwall1 = createBackWall();
+        backwall1.position.y = -0.0001;
+        backwall1.position.x = 0;
+        backwall1.position.z = 13;
+
+        const backwall2 = createBackWall();
+        backwall2.position.y = -0.0001;
+        backwall2.position.x = 0;
+        backwall2.position.z = -11;
 
         //createWindow();
         //createDoor();
@@ -303,8 +310,8 @@ function createBackWall() {
     shape.lineTo(-1, 2);
     shape.lineTo(-1, 0);
     shape.lineTo(-8, 0);
-    shape.lineTo(-8, 4.7);
-    shape.lineTo(8, 4.7);
+    shape.lineTo(-8, 4.5);
+    shape.lineTo(8, 4.5);
     shape.lineTo(8, 0);
 
     const extrudeGeometry = new THREE.ExtrudeGeometry( shape ) 
@@ -316,6 +323,8 @@ function createBackWall() {
     const material = new THREE.MeshBasicMaterial({map: texture});
 
     const backWall = new THREE.Mesh( extrudeGeometry, material) ;
+
+    backWall.rotation.y = Math.PI;
 
     house.add(backWall);
 
