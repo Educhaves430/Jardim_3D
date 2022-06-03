@@ -182,15 +182,30 @@ function create() {
         roof4.position.x = 10;
         roof4.position.z = 0.5;
 
+
+        const backwall = createBackWall();
+        backwall.rotation.y = Math.PI * 0.5;
+
         //createWindow();
         //createDoor();
+
+        //Criar bancos
         createBench1();
         createBench2();
         createBench3();
         createBench4();
         createBench5();
         createBench6();
-        //createBed();
+        
+        //criar Árvores
+        createArvore1();
+        createArvore2();
+        createArvore3();
+        createArvore4();
+        createArvore5();
+        createArvore6();
+        createArvore7();
+        createArvore8();
     }
    
     scene.add(house);
@@ -280,10 +295,17 @@ function createFrontWall() {
 //Criar parede trás
 function createBackWall() {
     const shape = new THREE.Shape();
-    shape.moveTo(-7.5, 0)
-    shape.lineTo(7.5, 0)
-    shape.lineTo(7.5,5)
-    shape.lineTo(-7.5,5);
+    shape.moveTo(0, 0)
+    shape.lineTo(8, 0);
+    shape.lineTo(1, 0);
+    shape.lineTo(1, 2);
+    shape.lineTo(0, 2.5);
+    shape.lineTo(-1, 2);
+    shape.lineTo(-1, 0);
+    shape.lineTo(-8, 0);
+    shape.lineTo(-8, 4.7);
+    shape.lineTo(8, 4.7);
+    shape.lineTo(8, 0);
 
     const extrudeGeometry = new THREE.ExtrudeGeometry( shape ) 
 
@@ -295,11 +317,9 @@ function createBackWall() {
 
     const backWall = new THREE.Mesh( extrudeGeometry, material) ;
 
-    backWall.position.z = 7.5;
-    backWall.position.x = -5;
-    backWall.rotation.y = Math.PI * 0.5;
-
     house.add(backWall);
+
+    return backWall;
 }
 
 //Criar Telhado
@@ -385,6 +405,7 @@ function createWindow() {
     house.add(door);
 }*/
 
+//Criar bancos de um lado
 function createBench1() {
     loader.load('../obj/bench/scene.gltf', gltf => {
         gltf.scene.rotation.y = Math.PI * 0.5;
@@ -414,7 +435,8 @@ function createBench3() {
         worldOctree.fromGraphNode(gltf.scene);
     });
 }
-/////////////////////////////////////
+
+//Criar bancos do outro lado
 function createBench4() {
     loader.load('../obj/bench/scene.gltf', gltf => {
         gltf.scene.rotation.y = Math.PI * 0.5;
@@ -440,6 +462,88 @@ function createBench6() {
         gltf.scene.rotation.y = Math.PI * 0.5;
         gltf.scene.position.set(-9, 0, 6);
         gltf.scene.scale.set(2, 2, 2);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+//Criar árvores de um dos lados
+function createArvore1() {
+    loader.load('../obj/arvore/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-9, 0, 9.5);
+        gltf.scene.scale.set(10, 10, 10);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createArvore2() {
+    loader.load('../obj/pinheiro/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-9, 0, 3);
+        gltf.scene.scale.set(0.7, 0.7, 0.7);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createArvore3() {
+    loader.load('../obj/arvore/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-9, 0, -3);
+        gltf.scene.scale.set(10, 10, 10);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createArvore4() {
+    loader.load('../obj/pinheiro/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-9, 0, -8.8);
+        gltf.scene.scale.set(0.7, 0.7, 0.7);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+//Criar árvores do outro lado
+function createArvore5() {
+    loader.load('../obj/pinheiro/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(9, 0, 9.5);
+        gltf.scene.scale.set(0.7, 0.7, 0.7);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createArvore6() {
+    loader.load('../obj/arvore/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(9, 0, 3);
+        gltf.scene.scale.set(10, 10, 10);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createArvore7() {
+    loader.load('../obj/pinheiro/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(9, 0, -3);
+        gltf.scene.scale.set(0.7, 0.7, 0.7);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createArvore8() {
+    loader.load('../obj/arvore/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(9, 0, -8.8);
+        gltf.scene.scale.set(10, 10, 10);
         house.add(gltf.scene);
         worldOctree.fromGraphNode(gltf.scene);
     });
