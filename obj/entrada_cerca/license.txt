@@ -1,0 +1,11 @@
+Model Information:
+* title:	Fence and Gate (Wood)
+* source:	https://sketchfab.com/3d-models/fence-and-gate-wood-20e6b190adaa47aa883c93b490bda791
+* author:	trentspi (https://sketchfab.com/trentspice)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Fence and Gate (Wood)" (https://sketchfab.com/3d-models/fence-and-gate-wood-20e6b190adaa47aa883c93b490bda791) by trentspi (https://sketchfab.com/trentspice) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

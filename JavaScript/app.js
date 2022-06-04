@@ -52,16 +52,16 @@ controls.addEventListener('unlock', () => (menuPanel.style.display = 'block'));
 const onKeyDown = function (event) {
     switch (event.code) {
         case 'KeyW':
-            controls.moveForward(2)
+            controls.moveForward(1)
             break
         case 'KeyA':
-            controls.moveRight(-2)
+            controls.moveRight(-1)
             break
         case 'KeyS':
-            controls.moveForward(-2)
+            controls.moveForward(-1)
             break
         case 'KeyD':
-            controls.moveRight(2)
+            controls.moveRight(1)
             break
     }
 }
@@ -75,7 +75,7 @@ function create() {
     document.body.appendChild(renderer.domElement);
 
     //Posição da camara
-    camera.position.set(0, 1, 0)
+    camera.position.set(0, 7, 0)
     camera.lookAt(scene.position);
 
     //Luz
@@ -184,17 +184,30 @@ function create() {
 
 
         const backwall1 = createBackWall();
-        backwall1.position.y = -0.0001;
+        backwall1.position.y = -0.001;
         backwall1.position.x = 0;
         backwall1.position.z = 13;
 
         const backwall2 = createBackWall();
-        backwall2.position.y = -0.0001;
+        backwall2.position.y = -0.001;
         backwall2.position.x = 0;
         backwall2.position.z = -11;
 
-        //createWindow();
-        //createDoor();
+        //Criar cerca
+        createFence11();
+        createFence21();
+        createFence12();
+        createFence22();
+        createFence13();
+        createFence23();
+        createFence14();
+        createFence24();
+        createFence15();
+        createFence25();
+        createFence16();
+        createFence26();
+        createFenceEntry1();
+        createFenceEntry2();
 
         //Criar bancos
         createBench1();
@@ -216,8 +229,6 @@ function create() {
     }
    
     scene.add(house);
-
-    //scene.fog = new THREE.Fog(0xffffff, 10, 1500);
 }
 
 //Criar paredes laterais com prisma triangular
@@ -245,7 +256,7 @@ function createSideWall() {
     return sideWall;
 }
 
-//Parede da frente com janela
+//Parede grande
 function createFrontWall() {
     const shape = new THREE.Shape();
     shape.moveTo(0, 0);
@@ -254,36 +265,8 @@ function createFrontWall() {
     shape.lineTo(-12.3,5);
     shape.lineTo(-12.3,0);
 
-/*
-    shape.moveTo(-7.5, 0);
-    shape.lineTo(7.5, 0);
-    shape.lineTo(7.5,5);
-    shape.lineTo(-7.5,5);
-    shape.lineTo(-7.5,0);*/
-
-
-
-
-    /*const window = new THREE.Path();
-    window.moveTo(0,0)
-    window.lineTo(80, 30)
-    window.lineTo(80, 80)
-    window.lineTo(30, 80);
-    window.lineTo(30, 30);
-    shape.holes.push(window);*/
-
-    /*const door = new THREE.Path();
-    door.moveTo(-30, 0)
-    door.lineTo(-30, 80)
-    door.lineTo(-80, 80)
-    door.lineTo(-80, 0);
-    door.lineTo(-30, 0);
-    shape.holes.push(door);*/
-
-    //
     const extrudeGeometry = new THREE.ExtrudeGeometry( shape ) 
 
-    //
     const texture = new THREE.TextureLoader().load('./img/parede.jpg');
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set( 0.5, 0.5 );
@@ -299,20 +282,20 @@ function createFrontWall() {
     return frontWall;
 }
 
-//Criar parede trás
+//Criar parede entrada
 function createBackWall() {
     const shape = new THREE.Shape();
     shape.moveTo(0, 0)
-    shape.lineTo(8, 0);
+    shape.lineTo(7.5, 0);
     shape.lineTo(1, 0);
     shape.lineTo(1, 2);
     shape.lineTo(0, 2.5);
     shape.lineTo(-1, 2);
     shape.lineTo(-1, 0);
-    shape.lineTo(-8, 0);
-    shape.lineTo(-8, 4.5);
-    shape.lineTo(8, 4.5);
-    shape.lineTo(8, 0);
+    shape.lineTo(-7.5, 0);
+    shape.lineTo(-7.5, 4.5);
+    shape.lineTo(7.5, 4.5);
+    shape.lineTo(7.5, 0);
 
     const extrudeGeometry = new THREE.ExtrudeGeometry( shape ) 
 
@@ -356,63 +339,146 @@ function createRoof() {
     return roof;
 }
 
-//Criar Janela
-function createWindow() {
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 0);
-    shape.lineTo(0, 50)
-    shape.lineTo(50,50)
-    shape.lineTo(50,0);
-    shape.lineTo(0, 0);
-
-    const hole = new THREE.Path();
-    hole.moveTo(5,5)
-    hole.lineTo(5, 45)
-    hole.lineTo(45, 45)
-    hole.lineTo(45, 5);
-    hole.lineTo(5, 5);
-    shape.holes.push(hole);
-
-    const extrudeGeometry = new THREE.ExtrudeGeometry(shape);
-
-    var extrudeMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
-
-    var window = new THREE.Mesh( extrudeGeometry, extrudeMaterial ) ;
-    window.rotation.y = Math.PI / 2;
-    window.position.y = 30;
-    window.position.x = 100;
-    window.position.z = 120;
-
-    house.add(window);
-
-    return window;
-
+//Criar cerca
+function createFence11() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(4.6, 0, -7.4);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
 }
 
-//Criar porta
-/*function createDoor() {
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 0);
-    shape.lineTo(0, 80);
-    shape.lineTo(50,80);
-    shape.lineTo(50,0);
-    shape.lineTo(0, 0);
-    const hole = new THREE.Path();
-    hole.moveTo(5,5);
-    hole.lineTo(5, 75);
-    hole.lineTo(45, 75);
-    hole.lineTo(45, 5);
-    hole.lineTo(5, 5);
-    shape.holes.push(hole);
-    const extrudeGeometry = new THREE.ExtrudeGeometry( shape );
-    const material = new THREE.MeshBasicMaterial( { color: 'silver' } );
-    const door = new THREE.Mesh( extrudeGeometry, material ) ;
-    door.rotation.y = Math.PI / 2;
-    door.position.y = 0;
-    door.position.x = 100;
-    door.position.z = 230;
-    house.add(door);
-}*/
+function createFence21() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(-4.7, 0, -7.4);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence12() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(4.6, 0, -5.2);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence22() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(-4.7, 0, -5.2);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence13() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(4.6, 0, -2.9);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence23() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(-4.7, 0, -2.9);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence14() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(4.6, 0, -0.6);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence24() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(-4.7, 0, -0.6);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence15() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(4.6, 0, 1.4);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence25() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.12;
+        gltf.scene.position.set(-4.7, 0, 1.4);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence16() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.07;
+        gltf.scene.position.set(4.6, 0, 3.6);
+        gltf.scene.scale.set(0.55, 0.55, 1);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFence26() {
+    loader.load('../obj/cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * -0.07;
+        gltf.scene.position.set(-4.7, 0, 3.6);
+        gltf.scene.scale.set(0.55, 0.55, 1);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFenceEntry1() {
+    loader.load('../obj/entrada_cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-1.33, 0, -7.5);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
+
+function createFenceEntry2() {
+    loader.load('../obj/entrada_cerca/scene.gltf', gltf => {
+        gltf.scene.rotation.y = Math.PI * 0.5;
+        gltf.scene.position.set(-1.33, 0, 7.5);
+        gltf.scene.scale.set(0.55, 0.55, 0.55);
+        house.add(gltf.scene);
+        worldOctree.fromGraphNode(gltf.scene);
+    });
+}
 
 //Criar bancos de um lado
 function createBench1() {
@@ -557,11 +623,6 @@ function createArvore8() {
         worldOctree.fromGraphNode(gltf.scene);
     });
 }
-
-//const controls = new THREE.FirstPersonControls(camera);
-//controls.lookSpeed = 0.05;
-//controls.movementSpeed = 100;
-//controls.lookVertical = false;
 
 create()
 render()
