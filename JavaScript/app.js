@@ -133,25 +133,25 @@ function create() {
     }
 
     function createPlayer(){
-        const footspl = createfoots();
+        const footspl = createPlfoots();
         footspl.position.y = 0.15;
-        const legspl = createLegs();
+        const legspl = createPlLegs();
         legspl.position.y = 0.575;
-        const bodypl = createBody();
+        const bodypl = createPlBody();
         bodypl.position.y = 1.23;
-        const rightArm = createArm();
+        const rightArm = createPlArm();
         rightArm.position.x = -0.63;
         rightArm.position.y = 1.46;
-        const leftArm = createArm();
+        const leftArm = createPlArm();
         leftArm.position.x = 0.63;
         leftArm.position.y = 1.46;
-        const rightHandpl = createHand();
+        const rightHandpl = createPlHand();
         rightHandpl.position.x = -0.63;
         rightHandpl.position.y = 1.15;
-        const leftHandpl = createHand();
+        const leftHandpl = createPlHand();
         leftHandpl.position.x = 0.63;
         leftHandpl.position.y = 1.15;
-        const headpl = createhead();
+        const headpl = createPlhead();
         headpl.position.y = 1.65;
         const lowhatpl = createlowhat();
         lowhatpl.position.y = 1.75;
@@ -162,15 +162,102 @@ function create() {
     }
 
     function createShooter1(){
-        
+        const footsSh1 = createfoots();
+        footsSh1.position.x = 3;
+        footsSh1.position.y = 0.15;
+        const legsSh1 = createLegs();
+        legsSh1.position.x = 3;
+        legsSh1.position.y = 0.575;
+        const bodySh1 = createBody();
+        bodySh1.position.x = 3;
+        bodySh1.position.y = 1.23;
+        const rightArmSh1 = createArm();
+        rightArmSh1.position.x = (3 - 0.63);
+        rightArmSh1.position.y = 1.46;
+        const leftArmSh1 = createArm();
+        leftArmSh1.position.x = 3.63;
+        leftArmSh1.position.y = 1.46;
+        const rightHandSh1 = createHand();
+        rightHandSh1.position.x = (3 -0.63);
+        rightHandSh1.position.y = 1.15;
+        const leftHandSh1 = createHand();
+        leftHandSh1.position.x = 3.63;
+        leftHandSh1.position.y = 1.15;
+        const headSh1 = createhead();
+        headSh1.position.x = 3;
+        headSh1.position.y = 1.65;
+        const lowhatSh1 = createlowhatSh();
+        lowhatSh1.position.x = 3;
+        lowhatSh1.position.y = 1.75;
+        const highhatSh1 = createhighhatSh();
+        highhatSh1.position.x = 3;
+        highhatSh1.position.y = 1.85;
+        house.add(shooter1);
+        return shooter1;
     }
 
     function createShooter2(){
-        
+        const footsSh2 = createfoots();
+        footsSh2.position.y = 0.15;
+        const legsSh2 = createLegs();
+        legsSh2.position.y = 0.575;
+        const bodySh2 = createBody();
+        bodySh2.position.y = 1.23;
+        const rightArmSh2 = createArm();
+        rightArmSh2.position.x = -0.63;
+        rightArmSh2.position.y = 1.46;
+        const leftArmSh2 = createArm();
+        leftArmSh2.position.x = 0.63;
+        leftArmSh2.position.y = 1.46;
+        const rightHandSh2 = createHand();
+        rightHandSh2.position.x = -0.63;
+        rightHandSh2.position.y = 1.15;
+        const leftHandSh2 = createHand();
+        leftHandSh2.position.x = 0.63;
+        leftHandSh2.position.y = 1.15;
+        const headSh2 = createhead();
+        headSh2.position.y = 1.65;
+        const lowhatSh2 = createlowhatSh();
+        lowhatSh2.position.y = 1.75;
+        const highhatSh2 = createhighhatSh();
+        highhatSh2.position.y = 1.85;
+        house.add(shooter2);
+        return shooter2;
     }
 
     function createShooter3(){
-        
+        const footsSh3 = createfoots();
+        footsSh3.position.x = -3;
+        footsSh3.position.y = 0.15;
+        const legsSh3 = createLegs();
+        legsSh3.position.x = -3;
+        legsSh3.position.y = 0.575;
+        const bodySh3 = createBody();
+        bodySh3.position.x = -3;
+        bodySh3.position.y = 1.23;
+        const rightArmSh3 = createArm();
+        rightArmSh3.position.x = -3.63;
+        rightArmSh3.position.y = 1.46;
+        const leftArmSh3 = createArm();
+        leftArmSh3.position.x = (-3 + 0.63);
+        leftArmSh3.position.y = 1.46;
+        const rightHandSh3 = createHand();
+        rightHandSh3.position.x = -3.63;
+        rightHandSh3.position.y = 1.15;
+        const leftHandSh3 = createHand();
+        leftHandSh3.position.x = (-3 + 0.63);
+        leftHandSh3.position.y = 1.15;
+        const headSh3 = createhead();
+        headSh3.position.x = -3;
+        headSh3.position.y = 1.65;
+        const lowhatSh3 = createlowhatSh();
+        lowhatSh3.position.x = -3;
+        lowhatSh3.position.y = 1.75;
+        const highhatSh3 = createhighhatSh();
+        highhatSh3.position.x = -3;
+        highhatSh3.position.y = 1.85;
+        house.add(shooter3);
+        return shooter3;
     }
 
     //Criar casa
@@ -178,6 +265,13 @@ function create() {
         createFloor();
         const playerPl = createPlayer();
         playerPl.position.z = -6.5;
+        const shooterSh1 = createShooter1();
+        shooterSh1.position.z = 6.5;
+        const shooterSh2 = createShooter2();
+        shooterSh2.position.z = 6.5;
+        const shooterSh3 = createShooter3();
+        shooterSh3.position.z = 6.5;
+
         const line1 = createLine();
         const line2 = createLine();
         line1.rotation.y = Math.PI * 0.5;
@@ -285,69 +379,130 @@ function create() {
     scene.add(house);
 }
 
+function createPlfoots(){
+    var geometriaPlfoots = new THREE.BoxBufferGeometry(1, 0.15, 0.5);
+    var materialPlfoots = new THREE.MeshBasicMaterial({ color: "brown", });
+    const plfoots = new THREE.Mesh(geometriaPlfoots, materialPlfoots);
+    player.add(plfoots);
+    return plfoots;
+}
+
 function createfoots(){
     var geometriafoots = new THREE.BoxBufferGeometry(1, 0.15, 0.5);
     var materialfoots = new THREE.MeshBasicMaterial({ color: "brown", });
     const foots = new THREE.Mesh(geometriafoots, materialfoots);
-    player.add(foots);
+    shooter1.add(foots);
+    shooter2.add(foots);
+    shooter3.add(foots);
     return foots;
+}
+
+function createPlLegs(){
+    var geometriaPllegs = new THREE.BoxBufferGeometry(1, 0.7, 0.5);
+    var materialPllegs = new THREE.MeshBasicMaterial({ color: "blue", });
+    const pllegs = new THREE.Mesh(geometriaPllegs, materialPllegs);
+    player.add(pllegs);
+    return pllegs;
 }
 
 function createLegs(){
     var geometrialegs = new THREE.BoxBufferGeometry(1, 0.7, 0.5);
     var materiallegs = new THREE.MeshBasicMaterial({ color: "blue", });
     const legs = new THREE.Mesh(geometrialegs, materiallegs);
-    player.add(legs);
+    shooter1.add(legs);
+    shooter2.add(legs);
+    shooter3.add(legs);
     return legs;
+}
+
+function createPlBody(){
+    var geometriaPlbody = new THREE.BoxBufferGeometry(1, 0.6, 0.5);
+    var materialPlbody = new THREE.MeshBasicMaterial({ color: "white", });
+    const plbodyp = new THREE.Mesh(geometriaPlbody, materialPlbody);
+    player.add(plbodyp);
+    return plbodyp;
 }
 
 function createBody(){
     var geometriabody = new THREE.BoxBufferGeometry(1, 0.6, 0.5);
     var materialbody = new THREE.MeshBasicMaterial({ color: "white", });
     const bodyp = new THREE.Mesh(geometriabody, materialbody);
-    player.add(bodyp);
+    shooter1.add(bodyp);
+    shooter2.add(bodyp);
+    shooter3.add(bodyp);
     return bodyp;
+}
+
+function createPlArm(){
+    var geometriaPlarm = new THREE.BoxBufferGeometry(0.25, 0.15, 0.5);
+    var materialPlarm = new THREE.MeshBasicMaterial({ color: "white", });
+    const plarm = new THREE.Mesh(geometriaPlarm, materialPlarm);
+    player.add(plarm);
+    return plarm;
 }
 
 function createArm(){
     var geometriaarm = new THREE.BoxBufferGeometry(0.25, 0.15, 0.5);
     var materialarm = new THREE.MeshBasicMaterial({ color: "white", });
     const arm = new THREE.Mesh(geometriaarm, materialarm);
-    player.add(arm);
+    shooter1.add(arm);
+    shooter2.add(arm);
+    shooter3.add(arm);
     return arm;
+}
+
+function createPlHand(){
+    var geometriaPlhand = new THREE.BoxBufferGeometry(0.25, 0.45, 0.5);
+    var materialPlhand = new THREE.MeshBasicMaterial({ color: "pink", });
+    const plhand = new THREE.Mesh(geometriaPlhand, materialPlhand);
+    player.add(plhand);
+    return plhand;
 }
 
 function createHand(){
     var geometriahand = new THREE.BoxBufferGeometry(0.25, 0.45, 0.5);
     var materialhand = new THREE.MeshBasicMaterial({ color: "pink", });
     const hand = new THREE.Mesh(geometriahand, materialhand);
-    player.add(hand);
-    //shooter1.add(hand);
-    //shooter2.add(hand);
-    //shooter3.add(hand);
+    shooter1.add(hand);
+    shooter2.add(hand);
+    shooter3.add(hand);
     return hand;
+}
+
+function createPlhead(){
+    var geometriaPlhead = new THREE.BoxBufferGeometry(0.5, 0.25, 0.5);
+    var materialPlhead = new THREE.MeshBasicMaterial({ color: "pink", });
+    const plhead = new THREE.Mesh(geometriaPlhead, materialPlhead);
+    player.add(plhead);
+    return plhead;
 }
 
 function createhead(){
     var geometriahead = new THREE.BoxBufferGeometry(0.5, 0.25, 0.5);
     var materialhead = new THREE.MeshBasicMaterial({ color: "pink", });
     const head = new THREE.Mesh(geometriahead, materialhead);
-    player.add(head);
-    //shooter1.add(head);
-    //shooter2.add(head);
-    //shooter3.add(head);
+    shooter1.add(head);
+    shooter2.add(head);
+    shooter3.add(head);
     return head;
 }
 
 function createlowhat(){
     var geometrialowhat = new THREE.BoxBufferGeometry(0.6, 0.05, 0.6);
-    var materiallowhat = new THREE.MeshBasicMaterial({ color: "red", });
+    var materiallowhat = new THREE.MeshBasicMaterial({ color: "Green", });
     const lowhat = new THREE.Mesh(geometrialowhat, materiallowhat);
     player.add(lowhat);
-    //shooter1.add(lowhat);
-    //shooter2.add(lowhat);
-    //shooter3.add(lowhat);
     return lowhat;
+}
+
+function createlowhatSh(){
+    var geometrialowhatSh = new THREE.BoxBufferGeometry(0.6, 0.05, 0.6);
+    var materiallowhatSh = new THREE.MeshBasicMaterial({ color: "orange", });
+    const lowhatSh = new THREE.Mesh(geometrialowhatSh, materiallowhatSh);
+    shooter1.add(lowhatSh);
+    shooter2.add(lowhatSh);
+    shooter3.add(lowhatSh);
+    return lowhatSh;
 }
 
 function createhighhat(){
@@ -355,10 +510,17 @@ function createhighhat(){
     var materialhighhat = new THREE.MeshBasicMaterial({ color: "yellow", });
     const highhat = new THREE.Mesh(geometriahighhat, materialhighhat);
     player.add(highhat);
-    //shooter1.add(highhat);
-    //shooter2.add(highhat);
-    //shooter3.add(highhat);
     return highhat;
+}
+
+function createhighhatSh(){
+    var geometriahighhatSh = new THREE.BoxBufferGeometry(0.5, 0.2, 0.5);
+    var materialhighhatSh = new THREE.MeshBasicMaterial({ color: "red", });
+    const highhatSh = new THREE.Mesh(geometriahighhatSh, materialhighhatSh);
+    shooter1.add(highhatSh);
+    shooter2.add(highhatSh);
+    shooter3.add(highhatSh);
+    return highhatSh;
 }
 
 //Criar paredes laterais com prisma triangular
