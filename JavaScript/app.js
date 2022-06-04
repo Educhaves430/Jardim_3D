@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { Octree } from 'three/examples/jsm/math/Octree';
 
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -23,6 +24,8 @@ const shooter3 = new THREE.Group();
 const renderer = new THREE.WebGLRenderer();
 
 const loader = new GLTFLoader();
+
+//const worldOctree = new Octree();
 
 //SkyBox 
 const skyboxloader = new THREE.CubeTextureLoader();
@@ -299,7 +302,6 @@ function create() {
         const frontWall2 = createFrontWall();
         frontWall2.position.x = -12.38;
         frontWall2.position.z = 0.5;
-        //createBackWall();
 
         const roof1 = createRoof();
         const roof2 = createRoof();
@@ -377,6 +379,7 @@ function create() {
     }
    
     scene.add(house);
+    //worldOctree.fromGraphNode(scene);
 }
 
 function createPlfoots(){
