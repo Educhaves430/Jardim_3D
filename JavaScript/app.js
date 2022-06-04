@@ -14,6 +14,12 @@ const scene = new THREE.Scene();
 
 const house = new THREE.Group();
 
+const player = new THREE.Group();
+
+const shooter1 = new THREE.Group();
+const shooter2 = new THREE.Group();
+const shooter3 = new THREE.Group();
+
 const renderer = new THREE.WebGLRenderer();
 
 const loader = new GLTFLoader();
@@ -75,7 +81,7 @@ function create() {
     document.body.appendChild(renderer.domElement);
 
     //Posição da camara
-    camera.position.set(0, 7, 0)
+    camera.position.set(0, 1.5, 0)
     camera.lookAt(scene.position);
 
     //Luz
@@ -107,7 +113,7 @@ function create() {
         scene.add( grass );
     }
     
-    //Criar chão de madeira
+    //Criar chão de areia
     function createFloor() {
         const geometry = new THREE.PlaneGeometry( 9, 15);
     
@@ -122,14 +128,62 @@ function create() {
     
         floor.rotation.x = -0.5 * Math.PI;
         floor.position.y = 0.001;
-        //floor.position.z = 7.5;
     
         house.add(floor);
+    }
+
+    function createPlayer(){
+        const footspl = createfoots();
+        footspl.position.y = 0.15;
+        const legspl = createLegs();
+        legspl.position.y = 0.575;
+        const bodypl = createBody();
+        bodypl.position.y = 1.23;
+        const rightArm = createArm();
+        rightArm.position.x = -0.63;
+        rightArm.position.y = 1.46;
+        const leftArm = createArm();
+        leftArm.position.x = 0.63;
+        leftArm.position.y = 1.46;
+        const rightHandpl = createHand();
+        rightHandpl.position.x = -0.63;
+        rightHandpl.position.y = 1.15;
+        const leftHandpl = createHand();
+        leftHandpl.position.x = 0.63;
+        leftHandpl.position.y = 1.15;
+        const headpl = createhead();
+        headpl.position.y = 1.65;
+        const lowhatpl = createlowhat();
+        lowhatpl.position.y = 1.75;
+        const highhatpl = createhighhat();
+        highhatpl.position.y = 1.85;
+        house.add(player);
+        return player;
+    }
+
+    function createShooter1(){
+        
+    }
+
+    function createShooter2(){
+        
+    }
+
+    function createShooter3(){
+        
     }
 
     //Criar casa
     function createHouse() {
         createFloor();
+        const playerPl = createPlayer();
+        playerPl.position.z = -6.5;
+        const line1 = createLine();
+        const line2 = createLine();
+        line1.rotation.y = Math.PI * 0.5;
+        line1.position.x = 1.5;
+        line2.rotation.y = Math.PI * 0.5;
+        line2.position.x = -1.5;
         
         const sideWall01 = createSideWall();
         const sideWall02 = createSideWall();
@@ -229,6 +283,82 @@ function create() {
     }
    
     scene.add(house);
+}
+
+function createfoots(){
+    var geometriafoots = new THREE.BoxBufferGeometry(1, 0.15, 0.5);
+    var materialfoots = new THREE.MeshBasicMaterial({ color: "brown", });
+    const foots = new THREE.Mesh(geometriafoots, materialfoots);
+    player.add(foots);
+    return foots;
+}
+
+function createLegs(){
+    var geometrialegs = new THREE.BoxBufferGeometry(1, 0.7, 0.5);
+    var materiallegs = new THREE.MeshBasicMaterial({ color: "blue", });
+    const legs = new THREE.Mesh(geometrialegs, materiallegs);
+    player.add(legs);
+    return legs;
+}
+
+function createBody(){
+    var geometriabody = new THREE.BoxBufferGeometry(1, 0.6, 0.5);
+    var materialbody = new THREE.MeshBasicMaterial({ color: "white", });
+    const bodyp = new THREE.Mesh(geometriabody, materialbody);
+    player.add(bodyp);
+    return bodyp;
+}
+
+function createArm(){
+    var geometriaarm = new THREE.BoxBufferGeometry(0.25, 0.15, 0.5);
+    var materialarm = new THREE.MeshBasicMaterial({ color: "white", });
+    const arm = new THREE.Mesh(geometriaarm, materialarm);
+    player.add(arm);
+    return arm;
+}
+
+function createHand(){
+    var geometriahand = new THREE.BoxBufferGeometry(0.25, 0.45, 0.5);
+    var materialhand = new THREE.MeshBasicMaterial({ color: "pink", });
+    const hand = new THREE.Mesh(geometriahand, materialhand);
+    player.add(hand);
+    //shooter1.add(hand);
+    //shooter2.add(hand);
+    //shooter3.add(hand);
+    return hand;
+}
+
+function createhead(){
+    var geometriahead = new THREE.BoxBufferGeometry(0.5, 0.25, 0.5);
+    var materialhead = new THREE.MeshBasicMaterial({ color: "pink", });
+    const head = new THREE.Mesh(geometriahead, materialhead);
+    player.add(head);
+    //shooter1.add(head);
+    //shooter2.add(head);
+    //shooter3.add(head);
+    return head;
+}
+
+function createlowhat(){
+    var geometrialowhat = new THREE.BoxBufferGeometry(0.6, 0.05, 0.6);
+    var materiallowhat = new THREE.MeshBasicMaterial({ color: "red", });
+    const lowhat = new THREE.Mesh(geometrialowhat, materiallowhat);
+    player.add(lowhat);
+    //shooter1.add(lowhat);
+    //shooter2.add(lowhat);
+    //shooter3.add(lowhat);
+    return lowhat;
+}
+
+function createhighhat(){
+    var geometriahighhat = new THREE.BoxBufferGeometry(0.5, 0.2, 0.5);
+    var materialhighhat = new THREE.MeshBasicMaterial({ color: "yellow", });
+    const highhat = new THREE.Mesh(geometriahighhat, materialhighhat);
+    player.add(highhat);
+    //shooter1.add(highhat);
+    //shooter2.add(highhat);
+    //shooter3.add(highhat);
+    return highhat;
 }
 
 //Criar paredes laterais com prisma triangular
@@ -339,6 +469,15 @@ function createRoof() {
     return roof;
 }
 
+//Criar linhas brancas
+function createLine() {
+    var geometria = new THREE.BoxBufferGeometry(14.5, 0.01, 0.2);
+    var material = new THREE.MeshBasicMaterial({ color: "white", });
+    const line = new THREE.Mesh(geometria, material);
+    house.add(line);
+    return line;
+}
+
 //Criar cerca
 function createFence11() {
     loader.load('../obj/cerca/scene.gltf', gltf => {
@@ -346,7 +485,7 @@ function createFence11() {
         gltf.scene.position.set(4.6, 0, -7.4);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -356,7 +495,7 @@ function createFence21() {
         gltf.scene.position.set(-4.7, 0, -7.4);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -366,7 +505,7 @@ function createFence12() {
         gltf.scene.position.set(4.6, 0, -5.2);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -376,7 +515,7 @@ function createFence22() {
         gltf.scene.position.set(-4.7, 0, -5.2);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -386,7 +525,7 @@ function createFence13() {
         gltf.scene.position.set(4.6, 0, -2.9);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -396,7 +535,7 @@ function createFence23() {
         gltf.scene.position.set(-4.7, 0, -2.9);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -406,7 +545,7 @@ function createFence14() {
         gltf.scene.position.set(4.6, 0, -0.6);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -416,7 +555,7 @@ function createFence24() {
         gltf.scene.position.set(-4.7, 0, -0.6);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -426,7 +565,7 @@ function createFence15() {
         gltf.scene.position.set(4.6, 0, 1.4);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -436,7 +575,7 @@ function createFence25() {
         gltf.scene.position.set(-4.7, 0, 1.4);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -446,7 +585,7 @@ function createFence16() {
         gltf.scene.position.set(4.6, 0, 3.6);
         gltf.scene.scale.set(0.55, 0.55, 1);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -456,7 +595,7 @@ function createFence26() {
         gltf.scene.position.set(-4.7, 0, 3.6);
         gltf.scene.scale.set(0.55, 0.55, 1);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -466,7 +605,7 @@ function createFenceEntry1() {
         gltf.scene.position.set(-1.33, 0, -7.5);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -476,7 +615,7 @@ function createFenceEntry2() {
         gltf.scene.position.set(-1.33, 0, 7.5);
         gltf.scene.scale.set(0.55, 0.55, 0.55);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -487,7 +626,7 @@ function createBench1() {
         gltf.scene.position.set(9, 0, -6);
         gltf.scene.scale.set(2, 2, 2);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -497,7 +636,7 @@ function createBench2() {
         gltf.scene.position.set(9, 0, 0);
         gltf.scene.scale.set(2, 2, 2);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -507,7 +646,7 @@ function createBench3() {
         gltf.scene.position.set(9, 0, 6);
         gltf.scene.scale.set(2, 2, 2);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -518,7 +657,7 @@ function createBench4() {
         gltf.scene.position.set(-9, 0, -6);
         gltf.scene.scale.set(2, 2, 2);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -528,7 +667,7 @@ function createBench5() {
         gltf.scene.position.set(-9, 0, 0);
         gltf.scene.scale.set(2, 2, 2);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -538,7 +677,7 @@ function createBench6() {
         gltf.scene.position.set(-9, 0, 6);
         gltf.scene.scale.set(2, 2, 2);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -549,7 +688,7 @@ function createArvore1() {
         gltf.scene.position.set(-9, 0, 9.5);
         gltf.scene.scale.set(10, 10, 10);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -559,7 +698,7 @@ function createArvore2() {
         gltf.scene.position.set(-9, 0, 3);
         gltf.scene.scale.set(0.7, 0.7, 0.7);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -569,7 +708,7 @@ function createArvore3() {
         gltf.scene.position.set(-9, 0, -3);
         gltf.scene.scale.set(10, 10, 10);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -579,7 +718,7 @@ function createArvore4() {
         gltf.scene.position.set(-9, 0, -8.8);
         gltf.scene.scale.set(0.7, 0.7, 0.7);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -590,7 +729,7 @@ function createArvore5() {
         gltf.scene.position.set(9, 0, 9.5);
         gltf.scene.scale.set(0.7, 0.7, 0.7);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -600,7 +739,7 @@ function createArvore6() {
         gltf.scene.position.set(9, 0, 3);
         gltf.scene.scale.set(10, 10, 10);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -610,7 +749,7 @@ function createArvore7() {
         gltf.scene.position.set(9, 0, -3);
         gltf.scene.scale.set(0.7, 0.7, 0.7);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
@@ -620,7 +759,7 @@ function createArvore8() {
         gltf.scene.position.set(9, 0, -8.8);
         gltf.scene.scale.set(10, 10, 10);
         house.add(gltf.scene);
-        worldOctree.fromGraphNode(gltf.scene);
+        //worldOctree.fromGraphNode(gltf.scene);
     });
 }
 
