@@ -2,20 +2,25 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Octree } from 'three/examples/jsm/math/Octree';
+//import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+//import { Octree } from 'three/examples/jsm/math/Octree';
 
 const width = window.innerWidth;
 const height = window.innerHeight;
 
-const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
 
-const clock = new THREE.Clock();
+var camera2 = new THREE.OrthographicCamera(-30,30,20,-20,-10,1000);
+
+//const clock = new THREE.Clock();
 
 const scene = new THREE.Scene();
 
 const house = new THREE.Group();
 
 const player = new THREE.Group();
+
+const playerVelocity = new THREE.Vector3();
 
 const shooter1 = new THREE.Group();
 const shooter2 = new THREE.Group();
@@ -24,6 +29,17 @@ const shooter3 = new THREE.Group();
 const renderer = new THREE.WebGLRenderer();
 
 const loader = new GLTFLoader();
+
+//var pontos = 0;
+
+//var text = document.getElementById("pontos").innerHTML = pontos + " Pontos";
+
+var c = 0;
+
+//sons
+var SomJogo = new Audio('/Sons/Fluffing-a-Duck.mp3');
+
+var musica = false;
 
 //const worldOctree = new Octree();
 
@@ -57,46 +73,185 @@ const controls = new PointerLockControls(camera, renderer.domElement);
 controls.addEventListener('lock', () => (menuPanel.style.display = 'none'));
 controls.addEventListener('unlock', () => (menuPanel.style.display = 'block'));
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function create() {
+
+     //Definir tamanho da janela
+     renderer.setSize(width, height);
+     renderer.setClearColor(0xcce0ff, 1);
+     document.body.appendChild(renderer.domElement);
+ 
+     //Posição da camara Perspetiva
+     camera.position.set(7, 2.5, 11)
+ 
+     //camara ortografica
+   ;
+     camera2.position.set(0,26,0);
+     camera2.lookAt(scene.position);
+
+     //LUZES
+var dlight = new THREE.DirectionalLight(0xFFFFFF,1.0);
+dlight.position.set(30,100,10);
+dlight.target.position.set(0,0,0);
+scene.add(dlight);
+
+
+//const lightG = new THREE.PointLight( 0x00FF00, 1, 100 );
+const lightG = new THREE.PointLight( 0xEDF0F3, 1, 100 );
+lightG.position.set( 20,8,-15 );
+scene.add( lightG );
+lightG.visible= true;
+
+//const lightR = new THREE.PointLight( 0xff0000, 1, 100 );
+const lightR = new THREE.PointLight( 0x000000 , 1, 100 );
+lightR.position.set( 20,12,-15 );
+scene.add( lightR );
+lightR.visible= false;
+
+
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+ambientLight.castShadow = true;
+scene.add(ambientLight);
+
+function createPlayer(){
+    const footspl = createPlfoots();
+    footspl.position.y = 0.15;
+    const legspl = createPlLegs();
+    legspl.position.y = 0.575;
+    const bodypl = createPlBody();
+    bodypl.position.y = 1.23;
+    const rightArm = createPlArm();
+    rightArm.position.x = -0.63;
+    rightArm.position.y = 1.46;
+    const leftArm = createPlArm();
+    leftArm.position.x = 0.63;
+    leftArm.position.y = 1.46;
+    const rightHandpl = createPlHand();
+    rightHandpl.position.x = -0.63;
+    rightHandpl.position.y = 1.15;
+    const leftHandpl = createPlHand();
+    leftHandpl.position.x = 0.63;
+    leftHandpl.position.y = 1.15;
+    const headpl = createPlhead();
+    headpl.position.y = 1.65;
+    const lowhatpl = createlowhat();
+    lowhatpl.position.y = 1.75;
+    const highhatpl = createhighhat();
+    highhatpl.position.y = 1.85;
+    house.add(player);
+    return player;
+}
+
 //Movimento teclas
 const onKeyDown = function (event) {
     switch (event.code) {
         case 'KeyW':
+            //player.moveForward(1)
             controls.moveForward(1)
             break
         case 'KeyA':
+            //player.moveRight(-1)
             controls.moveRight(-1)
             break
         case 'KeyS':
+            //player.moveForward(-1)
             controls.moveForward(-1)
             break
         case 'KeyD':
+            //player.moveRight(1)
             controls.moveRight(1)
+            break
+        case 'Space':
+            playerVelocity.y = 3;
+            break
+            //click enter para reiniciar
+            /*
+        case 'Enter':
+            ReiniciarJogo(); 
+            break
+            */
+        // apagarLuzes no "l"
+        case 'KeyL':
+            apagarLuzes();
             break
     }
 }
 document.addEventListener('keydown', onKeyDown, false)
 
-function create() {
+document.addEventListener('keydown',ev => {
 
-    //Definir tamanho da janela
-    renderer.setSize(width, height);
-    renderer.setClearColor(0xcce0ff, 1);
-    document.body.appendChild(renderer.domElement);
+    //click c para mudar camara
+    if(ev.keyCode == 67 ){
+      if(c==0){
+        c=1;
+      }else{
+        c=0;
+      }
+    }
+     //Ativar musica do jogo "m"
+     if(ev.keyCode == 77 ){ 
+        ClickMusica();
+      }
+});
 
-    //Posição da camara
-    camera.position.set(0, 1.5, 0)
-    camera.lookAt(scene.position);
+//função ligar e desligar musica
+function ClickMusica(){
 
-    //Luz
-    const light = new THREE.AmbientLight(0xCCCCCC);
-    scene.add(light);
+    if(musica == false){
+      musica = true;
+      SomJogo.play();
+    }else{
+      musica = false;
+      SomJogo.pause();
+      //reiniciar o som
+      SomJogo.currentTime = 0;
+    }
+  
+  }
+
+ //-----------------------------Função Apagar luz------------------------
+    
+ function apagarLuzes(){
+    var count = 0;
+  
+          if(dlight.visible == true){
+            dlight.visible = false;
+            ambientLight.visible = false;
+            }else{
+              dlight.visible = true;
+              ambientLight.visible = true;
+            }
+        
+        if(lightG.visible == true){
+                lightR.visible = true;
+                lightG.visible = false;
+                count++;
+                ambientLight.visible = true;
+  
+            }else{
+                lightR.visible = false;
+                lightG.visible = true;
+                count++;
+                ambientLight.visible = true;
+            }
+  
+            if(count == 3){
+                lightG.visible = false;
+                lightR.visible = false;
+                count =0;
+                ambientLight.visible = false;
+            }
+  
+  }
 
     //Criar Objetos
     createGrass();
     createHouse();
 
     //Criar Animação
-    animate();
+    //animate();
+
 
     //Função criar Plano/Relva
     function createGrass() {
@@ -135,34 +290,7 @@ function create() {
         house.add(floor);
     }
 
-    function createPlayer(){
-        const footspl = createPlfoots();
-        footspl.position.y = 0.15;
-        const legspl = createPlLegs();
-        legspl.position.y = 0.575;
-        const bodypl = createPlBody();
-        bodypl.position.y = 1.23;
-        const rightArm = createPlArm();
-        rightArm.position.x = -0.63;
-        rightArm.position.y = 1.46;
-        const leftArm = createPlArm();
-        leftArm.position.x = 0.63;
-        leftArm.position.y = 1.46;
-        const rightHandpl = createPlHand();
-        rightHandpl.position.x = -0.63;
-        rightHandpl.position.y = 1.15;
-        const leftHandpl = createPlHand();
-        leftHandpl.position.x = 0.63;
-        leftHandpl.position.y = 1.15;
-        const headpl = createPlhead();
-        headpl.position.y = 1.65;
-        const lowhatpl = createlowhat();
-        lowhatpl.position.y = 1.75;
-        const highhatpl = createhighhat();
-        highhatpl.position.y = 1.85;
-        house.add(player);
-        return player;
-    }
+
 
     function createShooter1(){
         const footsSh1 = createfoots();
@@ -344,38 +472,40 @@ function create() {
         backwall2.position.z = -11;
 
         //Criar cerca
-        createFence11();
-        createFence21();
-        createFence12();
-        createFence22();
-        createFence13();
-        createFence23();
-        createFence14();
-        createFence24();
-        createFence15();
-        createFence25();
-        createFence16();
-        createFence26();
-        createFenceEntry1();
-        createFenceEntry2();
+        // createFence11();
+        // createFence21();
+        // createFence12();
+        // createFence22();
+        // createFence13();
+        // createFence23();
+        // createFence14();
+        // createFence24();
+        // createFence15();
+        // createFence25();
+        // createFence16();
+        // createFence26();
+        // createFenceEntry1();
+        // createFenceEntry2();
 
         //Criar bancos
-        createBench1();
-        createBench2();
-        createBench3();
-        createBench4();
-        createBench5();
-        createBench6();
+        // createBench1();
+        // createBench2();
+        // createBench3();
+        // createBench4();
+        // createBench5();
+        // createBench6();
         
         //criar Árvores
-        createArvore1();
-        createArvore2();
-        createArvore3();
-        createArvore4();
-        createArvore5();
-        createArvore6();
-        createArvore7();
-        createArvore8();
+        // createArvore1();
+        // createArvore2();
+        // createArvore3();
+        // createArvore4();
+        // createArvore5();
+        // createArvore6();
+        // createArvore7();
+        // createArvore8();
+
+        createUmbrella();
     }
    
     scene.add(house);
@@ -928,23 +1058,31 @@ function createArvore8() {
     });
 }
 
-create()
-render()
-animate();
+let beach_umbrella = undefined;
 
-function render() {
-    const delta = clock.getDelta();
-    controls.update(delta);
-
-    renderer.render(scene, camera);
-    requestAnimationFrame(render)
+function createUmbrella() {
+    loader.load('../obj/beach_umbrella/scene.gltf', gltf => {
+        beach_umbrella = gltf.scene;
+        beach_umbrella.scale.set(0.05, 0.05, 0.05);
+        //beach_umbrella.position.set(0, 0, 0);
+        scene.add(beach_umbrella);
+        //worldOctree.fromGraphNode(gltf.scene);
+    });
 }
+
+create()
+animate();
 
 function animate(){
 
-    // Tells the browser to smoothly render at 60Hz
-	requestAnimationFrame(animate);
+    if(c==0){
+        renderer.render(scene,camera);
+     
+      }else{
+    
+        renderer.render(scene,camera2);
+      }
 
-	// Draw the scene from the perspective of the camera.
-	renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+
 }
