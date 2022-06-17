@@ -1,0 +1,7 @@
+{
+  "name": "projeto_computacao_grafica",
+  "version": "1.0.0",
+  "dependencies": {
+    "three": "^0.141.0"
+  }
+}
